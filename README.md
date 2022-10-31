@@ -35,13 +35,13 @@ We can then check the application there: http://localhost:5000
 ### Run the application with Docker using published data
 
 ```bash
-$ cd containers-101-workshop/aspnetapp
-$ docker built -t nmbrs/aspnetapp:0.1.0 .
+$ cd containers-101-workshop
+$ docker build -t nmbrs/aspnetapp:0.1.0 .
 $ docker run -it --rm -p 5000:80 --name aspnetapp nmbrs/aspnetapp:0.1.0
 ```
 
 ***Dockerfile***
-```docker
+```Dockerfile
 # This base image contains the ASP.NET Core and .NET runtimes and libraries
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
 
@@ -59,32 +59,34 @@ ENTRYPOINT ["dotnet", "aspnetapp.dll"]
 
 ```bash
 $ cd containers-101-workshop
-$ docker built -t nmbrs/aspnetapp:0.2.0 .
+$ docker build -f Dockerfile-multistage -t nmbrs/aspnetapp:0.2.0 .
 $ docker run -it --rm -p 5000:80 --name aspnetapp-multistage nmbrs/aspnetapp:0.2.0
 ```
 
 ***Dockerfile with Multistage Builds***
-```docker
-# https://hub.docker.com/_/microsoft-dotnet
+```Dockerfile
+# Stage 1
+# This base image contains the .NET CLI, .NET runtime, ASP.NET Core 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+
+# Define a working directory where you store files during the build process
 WORKDIR /source
 
-# copy csproj and restore as distinct layers
+# Copy csproj and restore as distinct layers (caching)
 COPY *.sln .
 COPY aspnetapp/*.csproj ./aspnetapp/
 RUN dotnet restore
 
-# copy everything else and build app
+# Copy everything else and build app
 COPY aspnetapp/. ./aspnetapp/
 WORKDIR /source/aspnetapp
 RUN dotnet publish -c release -o /app --no-restore
 
-# final stage/image
+# Stage 2
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
 WORKDIR /app
 COPY --from=build /app ./
 ENTRYPOINT ["dotnet", "aspnetapp.dll"]
-
 ```
 
 
