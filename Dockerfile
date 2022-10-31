@@ -5,7 +5,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:6.0
 WORKDIR /app
 
 # Copy local files previously generated inside your working directory
-COPY published/ ./
+COPY aspnetapp/published/ ./
 
 # Command run when the container is initiated
 ENTRYPOINT ["dotnet", "aspnetapp.dll"]

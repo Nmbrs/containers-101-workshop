@@ -37,8 +37,9 @@ We can then check the application there: http://localhost:5000
 ```bash
 $ cd containers-101-workshop
 $ docker build -t nmbrs/aspnetapp:0.1.0 .
-$ docker run -it --rm -p 5000:80 --name aspnetapp nmbrs/aspnetapp:0.1.0
+$ docker run -it --rm -p 5001:80 --name aspnetapp nmbrs/aspnetapp:0.1.0
 ```
+We can then check the application there: http://localhost:5001
 
 ***Dockerfile***
 ```Dockerfile
@@ -49,7 +50,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:6.0
 WORKDIR /app
 
 # Copy local files previously generated inside your working directory
-COPY published/ ./
+COPY aspnetapp/published/ ./
 
 # Command run when the container is initiated
 ENTRYPOINT ["dotnet", "aspnetapp.dll"]
@@ -60,8 +61,9 @@ ENTRYPOINT ["dotnet", "aspnetapp.dll"]
 ```bash
 $ cd containers-101-workshop
 $ docker build -f Dockerfile-multistage -t nmbrs/aspnetapp:0.2.0 .
-$ docker run -it --rm -p 5000:80 --name aspnetapp-multistage nmbrs/aspnetapp:0.2.0
+$ docker run -it --rm -p 5001:80 --name aspnetapp-multistage nmbrs/aspnetapp:0.2.0
 ```
+We can then check the application there: http://localhost:5001
 
 ***Dockerfile with Multistage Builds***
 ```Dockerfile
